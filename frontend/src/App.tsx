@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <Header />
-      <main className="h-full">
+      <main className="flex flex-col justify-between">
         <Todos />
       </main>
     </>
