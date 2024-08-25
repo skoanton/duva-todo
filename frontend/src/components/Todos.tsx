@@ -16,8 +16,8 @@ export default function Todos({}: TodosProps) {
     <div className=" flex flex-col gap-5 mt-5 p-2">
       <TodoItems />
       <Dialog>
-        <DialogTrigger>
-          <Button className="w-full md:w-1/3">Skapa en ny task </Button>
+        <DialogTrigger className="bg-primary text-primary-foreground rounded-md p-4 w-full md:w-1/3">
+          Skapa en ny task
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

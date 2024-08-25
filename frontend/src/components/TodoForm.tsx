@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import DatePicker from "./DatePicker";
+import { usePost } from "@/hooks/usePost";
+import Todos from "@/types/todos";
 const formSchema = z.object({
   taskName: z.string().min(2, {
     message: "Du måste ha ett task namn.",
@@ -24,6 +26,7 @@ const formSchema = z.object({
 type TodoFormProps = {};
 
 export default function TodoForm({}: TodoFormProps) {
+  const { postData, loading, error, response } = usePost("/todos");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,11 +35,14 @@ export default function TodoForm({}: TodoFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const newTodo = {
+      title: values.taskName,
+      dueDate: values.taskDate.toISOString(),
+    };
+    console.log(newTodo);
+    await postData(newTodo);
+  };
   return (
     <>
       <Form {...form}>

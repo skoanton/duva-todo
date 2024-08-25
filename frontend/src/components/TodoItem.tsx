@@ -1,5 +1,5 @@
 type TodoItemProps = {
-  todoName: string;
+  todoItem: Todos;
 };
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import TodoForm from "./TodoForm";
+import Todos from "@/types/todos";
 
-export default function TodoItem({ todoName }: TodoItemProps) {
+export default function TodoItem({ todoItem }: TodoItemProps) {
   const deleteTask = () => {
     console.log("raderar task");
   };
@@ -25,7 +26,7 @@ export default function TodoItem({ todoName }: TodoItemProps) {
       <li className="bg-white p-3 flex items-center justify-between rounded-xl">
         <div className="flex items-center gap-2">
           <Checkbox />
-          <span className="font-semibold"> {todoName}</span>
+          <span className="font-semibold"> {todoItem.title}</span>
         </div>
 
         <div>
@@ -44,7 +45,7 @@ export default function TodoItem({ todoName }: TodoItemProps) {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{todoName}</DialogTitle>
+                <DialogTitle>{todoItem.title}</DialogTitle>
               </DialogHeader>
               <TodoForm />
             </DialogContent>
@@ -68,7 +69,7 @@ export default function TodoItem({ todoName }: TodoItemProps) {
                 <DialogTitle>Är du säker?</DialogTitle>
               </DialogHeader>
               <DialogDescription className="text-center">
-                Du är på väg att radera {todoName}
+                Du är på väg att radera {todoItem.title}
               </DialogDescription>
               <DialogClose asChild>
                 <Button
