@@ -23,11 +23,12 @@ import { TODO_ACTIONS } from "@/context/TodoReducer";
 export default function TodoItem({ todoItem }: TodoItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { deleteData, loading } = useDelete(`/todos/${todoItem.id}`);
+  const [checked, setChecked] = useState(false);
 
   const { todoDispatch } = useContext(TodoContext);
-  const handleDeleteTask = () => {
+  const handleDeleteTask = async () => {
     console.log("Deleted todo");
-    deleteData();
+    await deleteData();
     todoDispatch({ type: TODO_ACTIONS.REMOVE, payload: todoItem });
   };
 
@@ -35,12 +36,17 @@ export default function TodoItem({ todoItem }: TodoItemProps) {
     setIsOpen(false);
   };
 
+  const handleCheckedChange = async (checked: boolean) => {
+    setChecked(checked);
+    await deleteData();
+    todoDispatch({ type: TODO_ACTIONS.REMOVE, payload: todoItem });
+  };
   console.log("current name:", todoItem.title);
   return (
     <>
       <li className="bg-white p-3 flex items-center justify-between rounded-xl">
         <div className="flex items-center gap-2">
-          <Checkbox />
+          <Checkbox onCheckedChange={handleCheckedChange} checked={checked} />
           <span className="font-semibold"> {todoItem.title}</span>
         </div>
 
