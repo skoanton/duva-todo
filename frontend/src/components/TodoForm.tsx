@@ -16,22 +16,36 @@ import { Input } from "@/components/ui/input";
 import DatePicker from "./DatePicker";
 import { usePost } from "@/hooks/usePost";
 import Todos from "@/types/todos";
+import { useUpdate } from "@/hooks/useUpdate";
+import { useContext } from "react";
+import { TodoContext } from "@/context/TodoContext";
+import { TODO_ACTIONS } from "@/context/TodoReducer";
+
 const formSchema = z.object({
   taskName: z.string().min(2, {
     message: "Du måste ha ett task namn.",
   }),
-  taskDate: z.date(),
+  taskDate: z.date({
+    required_error: "Du måste ha ett datum.",
+  }),
 });
 
-type TodoFormProps = {};
+type TodoFormProps = {
+  update: boolean;
+  todoItem?: Todos;
+  onClose?: () => void;
+};
 
-export default function TodoForm({}: TodoFormProps) {
-  const { postData, loading, error, response } = usePost("/todos");
+export default function TodoForm({ update, todoItem, onClose }: TodoFormProps) {
+  const { todoState, todoDispatch } = useContext(TodoContext);
+  const { postData, loading } = usePost("/todos");
+  const { updateData } = useUpdate(`/todos/${todoItem ? todoItem.id : ""}`);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      taskName: "",
-      taskDate: new Date(),
+      taskName: update ? todoItem!.title : "",
+      taskDate: update ? todoItem?.due_date : new Date(),
     },
   });
 
@@ -41,7 +55,18 @@ export default function TodoForm({}: TodoFormProps) {
       dueDate: values.taskDate.toISOString(),
     };
     console.log(newTodo);
-    await postData(newTodo);
+    let savedTodo: Todos;
+    if (update) {
+      savedTodo = await updateData(newTodo);
+      console.log("Uppdaterar");
+      todoDispatch({ type: TODO_ACTIONS.UPDATE, payload: savedTodo });
+    } else {
+      savedTodo = await postData(newTodo);
+      console.log(savedTodo);
+      console.log("Skapar ny");
+      todoDispatch({ type: TODO_ACTIONS.ADD, payload: savedTodo });
+    }
+    if (onClose) onClose();
   };
   return (
     <>
@@ -72,7 +97,9 @@ export default function TodoForm({}: TodoFormProps) {
               </FormItem>
             )}
           />
-          <Button type="submit">Lägg till task</Button>
+          <Button type="submit">
+            {update ? "Uppdatera" : "Lägg till task"}
+          </Button>
         </form>
       </Form>
     </>

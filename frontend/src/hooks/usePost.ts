@@ -4,22 +4,22 @@ import { useEffect, useState } from "react"
 
 export const usePost = (url:string) => {
     
-    const [response,setResponse] = useState<Todos[] | null >(null)
+
     const [loading,setLoading] = useState(true)
-    const [error,setError] = useState(null)
 
 
     const postData = async (data:any) => {
         setLoading(true)
-        setError(null)
+
 
         try{
             const res = await axios.post(url, data);
-            setResponse(res.data);
+            return res.data;
+         
         }
 
         catch(error){
-            console.log("Error with posting",error)
+            console.error("Error with adding:", error);
         }
 
         finally{
@@ -27,6 +27,6 @@ export const usePost = (url:string) => {
         }
     }
 
-    return { postData, loading, error, response };
+    return { postData, loading };
    
 }

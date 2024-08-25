@@ -1,7 +1,7 @@
 
 
 export default interface Todos {
-    id: string,
+    id: number,
     title:string,
     done: boolean,
     due_date: Date

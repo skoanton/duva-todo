@@ -6,7 +6,6 @@ export const useFetch = (url:string) => {
     
     const [data,setData] = useState<Todos[] | null >(null)
     const [loading,setLoading] = useState(true)
-    const [error,setError] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -15,8 +14,8 @@ export const useFetch = (url:string) => {
                 console.log("Data:", response.data);
                 setData(response.data)
             }
-            catch (err) {
-                console.log("Error");
+            catch (error) {
+                console.error("Error with deleting:", error);
             }
             finally{
                 setLoading(false);
@@ -26,5 +25,5 @@ export const useFetch = (url:string) => {
         fetchData();
     },[url])
 
-    return {data,loading,error};
+    return {data,loading};
 }

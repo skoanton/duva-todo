@@ -4,10 +4,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
+	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
@@ -44,11 +47,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Connection successful")
-	http.HandleFunc("/todos", handleTodos)
 
+	r := mux.NewRouter()
+
+	fmt.Println("Connection successful")
+	r.HandleFunc("/todos", handleTodos)
+	r.HandleFunc("/todos/{id}", deleteTodo).Methods("DELETE")
+	r.HandleFunc("/todos/{id}", updateTodo).Methods("PUT")
 	fmt.Println("Server is running on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", r))
 
 }
 
@@ -61,6 +68,81 @@ func handleTodos(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
+}
+
+func updateTodo(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid todo ID", http.StatusBadRequest)
+		return
+	}
+
+	var todo Todo
+	err = json.NewDecoder(r.Body).Decode(&todo)
+	if err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	result, err := db.Exec("UPDATE todos SET title = $1, due_date = $2 WHERE id = $3", todo.Title, todo.DueDate, id)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if rowsAffected == 0 {
+		http.Error(w, "Todo not found", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Todo updated successfully"})
+}
+
+func deleteTodo(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid todo ID", http.StatusBadRequest)
+		return
+	}
+
+	result, err := db.Exec("DELETE FROM todos WHERE id =$1", id)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if rowsAffected == 0 {
+		http.Error(w, "Todo not found", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+
 }
 
 func createTodo(w http.ResponseWriter, r *http.Request) {
@@ -87,8 +169,19 @@ func createTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
+
+	var createdTodo Todo
+	err = db.QueryRow(`
+    SELECT id, title, due_date
+    FROM todos
+    WHERE id = $1
+`, id).Scan(&createdTodo.ID, &createdTodo.Title, &createdTodo.DueDate)
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]int{"id": id})
+	json.NewEncoder(w).Encode(createdTodo)
 }
 
 func getTodos(w http.ResponseWriter, r *http.Request) {

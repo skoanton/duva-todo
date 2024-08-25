@@ -15,12 +15,25 @@ import {
 } from "@/components/ui/dialog";
 import TodoForm from "./TodoForm";
 import Todos from "@/types/todos";
+import { useDelete } from "@/hooks/useDelete";
+import { useContext, useRef, useState } from "react";
+import { TodoContext } from "@/context/TodoContext";
+import { TODO_ACTIONS } from "@/context/TodoReducer";
 
 export default function TodoItem({ todoItem }: TodoItemProps) {
-  const deleteTask = () => {
-    console.log("raderar task");
+  const [isOpen, setIsOpen] = useState(false);
+  const { deleteData, loading } = useDelete(`/todos/${todoItem.id}`);
+
+  const { todoState, todoDispatch } = useContext(TodoContext);
+  const handleDeleteTask = () => {
+    console.log("Deleted todo");
+    deleteData();
+    todoDispatch({ type: TODO_ACTIONS.REMOVE, payload: todoItem });
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+  };
   return (
     <>
       <li className="bg-white p-3 flex items-center justify-between rounded-xl">
@@ -30,7 +43,7 @@ export default function TodoItem({ todoItem }: TodoItemProps) {
         </div>
 
         <div>
-          <Dialog>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +60,11 @@ export default function TodoItem({ todoItem }: TodoItemProps) {
               <DialogHeader>
                 <DialogTitle>{todoItem.title}</DialogTitle>
               </DialogHeader>
-              <TodoForm />
+              <TodoForm
+                update={true}
+                todoItem={todoItem}
+                onClose={handleClose}
+              />
             </DialogContent>
           </Dialog>
 
@@ -72,15 +89,11 @@ export default function TodoItem({ todoItem }: TodoItemProps) {
                 Du är på väg att radera {todoItem.title}
               </DialogDescription>
               <DialogClose asChild>
-                <Button
-                  onClick={deleteTask}
-                  className=""
-                  variant={"destructive"}
-                >
+                <Button onClick={handleDeleteTask} variant={"destructive"}>
                   Ja
                 </Button>
               </DialogClose>
-              <DialogClose>
+              <DialogClose asChild>
                 <Button variant={"outline"}>Nej</Button>
               </DialogClose>
             </DialogContent>
