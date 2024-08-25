@@ -27,7 +27,14 @@ export const todoReducer = (todoState: TodoState,action: TodoActions):TodoState 
         }
 
         case TODO_ACTIONS.UPDATE: { 
-            return {...todoState, todo: todoState.todo.map(todo => todo.id === action.payload.id ? action.payload : todo)};
+            return {
+                ...todoState, 
+                todo: todoState.todo.map(todo => 
+                    todo.id === action.payload.id 
+                        ? { ...todo, ...action.payload } 
+                        : todo
+                )
+            };
         }
         default:
             return todoState;

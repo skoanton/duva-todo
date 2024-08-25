@@ -24,7 +24,7 @@ export default function TodoItem({ todoItem }: TodoItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { deleteData, loading } = useDelete(`/todos/${todoItem.id}`);
 
-  const { todoState, todoDispatch } = useContext(TodoContext);
+  const { todoDispatch } = useContext(TodoContext);
   const handleDeleteTask = () => {
     console.log("Deleted todo");
     deleteData();
@@ -34,6 +34,8 @@ export default function TodoItem({ todoItem }: TodoItemProps) {
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  console.log("current name:", todoItem.title);
   return (
     <>
       <li className="bg-white p-3 flex items-center justify-between rounded-xl">

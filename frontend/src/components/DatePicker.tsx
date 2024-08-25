@@ -21,7 +21,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
   const handleDateChange = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
     if (onChange) {
-      onChange(selectedDate); // Call the onChange handler from the form
+      onChange(selectedDate);
     }
   };
 

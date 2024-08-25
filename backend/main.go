@@ -106,9 +106,15 @@ func updateTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Todo not found", http.StatusNotFound)
 		return
 	}
+	var updatedTodo Todo
+	err = db.QueryRow("SELECT id, title, due_date, done FROM todos WHERE id = $1", id).Scan(&updatedTodo.ID, &updatedTodo.Title, &updatedTodo.DueDate, &updatedTodo.Done)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Todo updated successfully"})
+	json.NewEncoder(w).Encode(updatedTodo)
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {

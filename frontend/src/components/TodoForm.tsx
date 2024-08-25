@@ -59,6 +59,7 @@ export default function TodoForm({ update, todoItem, onClose }: TodoFormProps) {
     if (update) {
       savedTodo = await updateData(newTodo);
       console.log("Uppdaterar");
+      console.log("Uppdaterar med", savedTodo);
       todoDispatch({ type: TODO_ACTIONS.UPDATE, payload: savedTodo });
     } else {
       savedTodo = await postData(newTodo);
