@@ -1,5 +1,5 @@
 # Använd en officiell Node.js-bild som bas
-FROM node:16
+FROM node:18
 
 # Sätt arbetskatalogen
 WORKDIR /app
