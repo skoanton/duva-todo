@@ -90,31 +90,15 @@ func updateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := db.Exec("UPDATE todos SET title = $1, due_date = $2 WHERE id = $3", todo.Title, todo.DueDate, id)
+	_, err = db.Exec("UPDATE todos SET title = $1, due_date = $2 WHERE id = $3", todo.Title, todo.DueDate, id)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	if rowsAffected == 0 {
-		http.Error(w, "Todo not found", http.StatusNotFound)
-		return
-	}
-	var updatedTodo Todo
-	err = db.QueryRow("SELECT id, title, due_date, done FROM todos WHERE id = $1", id).Scan(&updatedTodo.ID, &updatedTodo.Title, &updatedTodo.DueDate, &updatedTodo.Done)
-	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
+	todo.ID = id
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(updatedTodo)
+	json.NewEncoder(w).Encode(todo)
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
@@ -130,20 +114,9 @@ func deleteTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := db.Exec("DELETE FROM todos WHERE id =$1", id)
+	_, err = db.Exec("DELETE FROM todos WHERE id =$1", id)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	if rowsAffected == 0 {
-		http.Error(w, "Todo not found", http.StatusNotFound)
 		return
 	}
 
@@ -152,42 +125,30 @@ func deleteTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func createTodo(w http.ResponseWriter, r *http.Request) {
+	var todo Todo
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	var todo Todo
 	err := json.NewDecoder(r.Body).Decode(&todo)
-
 	if err != nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
 		return
 	}
-	var id int
 
 	err = db.QueryRow(`
 	INSERT INTO todos(title,due_date)
 	VALUES($1,$2)
 	RETURNING ID
-	`, todo.Title, todo.DueDate).Scan(&id)
+	`, todo.Title, todo.DueDate).Scan(&todo.ID)
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	var createdTodo Todo
-	err = db.QueryRow(`
-    SELECT id, title, due_date
-    FROM todos
-    WHERE id = $1
-`, id).Scan(&createdTodo.ID, &createdTodo.Title, &createdTodo.DueDate)
-	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(createdTodo)
+	json.NewEncoder(w).Encode(todo)
 }
 
 func getTodos(w http.ResponseWriter, r *http.Request) {
@@ -197,7 +158,6 @@ func getTodos(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query("SELECT * FROM todos")
-
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
