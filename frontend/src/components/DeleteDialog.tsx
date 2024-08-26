@@ -1,6 +1,3 @@
-type DeleteDialogProps = {
-  todoItem: Todos;
-};
 import {
   Dialog,
   DialogClose,
@@ -10,12 +7,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import Todos from "@/types/todos";
 import { Button } from "./ui/button";
 import { useDelete } from "@/hooks/useDelete";
 import { TODO_ACTIONS } from "@/context/TodoReducer";
 import { useContext } from "react";
 import { TodoContext } from "@/context/TodoContext";
+
+type DeleteDialogProps = {
+  todoItem: Todos;
+};
 export default function DeleteDialog({ todoItem }: DeleteDialogProps) {
   const { deleteData, loading } = useDelete(`/todos/${todoItem.id}`);
   const { todoDispatch } = useContext(TodoContext);

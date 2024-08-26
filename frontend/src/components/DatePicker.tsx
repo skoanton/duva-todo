@@ -1,10 +1,5 @@
-type DatePickerProps = {
-  value?: Date;
-  onChange?: (date: Date | undefined) => void;
-};
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -15,6 +10,10 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 
+type DatePickerProps = {
+  value?: Date;
+  onChange?: (date: Date | undefined) => void;
+};
 export default function DatePicker({ value, onChange }: DatePickerProps) {
   const [date, setDate] = useState<Date>();
 

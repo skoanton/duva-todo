@@ -1,4 +1,3 @@
-type TodoItemsProps = {};
 import { ScrollArea } from "@/components/ui/scroll-area";
 import TodoItem from "./TodoItem";
 import { useFetch } from "@/hooks/useFetch";
@@ -6,6 +5,9 @@ import { useContext, useEffect } from "react";
 import { TodoContext } from "@/context/TodoContext";
 import { TODO_ACTIONS } from "@/context/TodoReducer";
 import { Loader } from "lucide-react";
+
+type TodoItemsProps = {};
+
 export default function TodoItems({}: TodoItemsProps) {
   const { data, loading } = useFetch("/todos");
 

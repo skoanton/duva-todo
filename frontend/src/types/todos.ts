@@ -1,5 +1,3 @@
-
-
 export default interface Todos {
     id: number,
     title:string,

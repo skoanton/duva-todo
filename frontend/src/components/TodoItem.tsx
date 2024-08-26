@@ -1,6 +1,3 @@
-type TodoItemProps = {
-  todoItem: Todos;
-};
 import { Checkbox } from "@/components/ui/checkbox";
 import Todos from "@/types/todos";
 import { useDelete } from "@/hooks/useDelete";
@@ -10,7 +7,9 @@ import { TODO_ACTIONS } from "@/context/TodoReducer";
 import DeleteDialog from "./DeleteDialog";
 
 import EditDialog from "./EditDialog";
-
+type TodoItemProps = {
+  todoItem: Todos;
+};
 export default function TodoItem({ todoItem }: TodoItemProps) {
   const { deleteData } = useDelete(`/todos/${todoItem.id}`);
   const [checked, setChecked] = useState(false);

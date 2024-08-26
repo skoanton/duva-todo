@@ -1,6 +1,3 @@
-type EditDialogProps = {
-  todoItem: Todos;
-};
 import {
   Dialog,
   DialogContent,
@@ -11,6 +8,10 @@ import {
 import { useState } from "react";
 import TodoForm from "./TodoForm";
 import Todos from "@/types/todos";
+
+type EditDialogProps = {
+  todoItem: Todos;
+};
 
 export default function EditDialog({ todoItem }: EditDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
