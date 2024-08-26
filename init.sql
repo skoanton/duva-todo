@@ -6,7 +6,6 @@ CREATE TABLE todos (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Infoga några exempeluppgifter
 INSERT INTO
     todos (title, done, due_date)
 VALUES (
