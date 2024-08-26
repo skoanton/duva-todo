@@ -1,6 +1,9 @@
 # Använd en officiell Go-bild som bas
 FROM golang:1.23
 
+# Installera nödvändiga paket
+RUN apt-get update && apt-get install -y netcat
+
 # Sätt arbetskatalogen
 WORKDIR /app
 
