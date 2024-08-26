@@ -14,7 +14,7 @@ type DatePickerProps = {
   value?: Date;
   onChange?: (date: Date | undefined) => void;
 };
-export default function DatePicker({ value, onChange }: DatePickerProps) {
+export default function DatePicker({ onChange }: DatePickerProps) {
   const [date, setDate] = useState<Date>();
 
   const handleDateChange = (selectedDate: Date | undefined) => {
