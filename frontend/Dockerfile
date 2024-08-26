@@ -5,19 +5,16 @@ FROM node:14
 WORKDIR /app
 
 # Kopiera package.json och package-lock.json
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-# Installera beroenden med --legacy-peer-deps flaggan
-RUN npm install --legacy-peer-deps
+# Installera beroenden
+RUN npm install
 
 # Kopiera resten av applikationen
 COPY . .
 
-# Bygg applikationen
-RUN npm run build
-
-# Exponera port 3000
+# Exponera port 3000 (eller vilken port din frontend använder)
 EXPOSE 3000
 
-# Starta applikationen
-CMD ["npm", "start"]
+# Starta applikationen med npm run dev
+CMD ["npm", "run", "dev"]
