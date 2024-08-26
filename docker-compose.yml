@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.'
 
 services:
   frontend:
@@ -23,7 +23,8 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=tododb
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   postgres:
     image: postgres:14
