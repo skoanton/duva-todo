@@ -4,7 +4,7 @@ import {useState } from "react"
 export const usePost = (url:string) => {
     
 
-    const [loading,setLoading] = useState(true)
+    const [loading,setLoading] = useState(false);
 
 
     const postData = async (data:any) => {

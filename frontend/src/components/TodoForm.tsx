@@ -1,12 +1,11 @@
 "use client";
-import { date, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,7 +36,7 @@ type TodoFormProps = {
 };
 
 export default function TodoForm({ update, todoItem, onClose }: TodoFormProps) {
-  const { todoState, todoDispatch } = useContext(TodoContext);
+  const { todoDispatch } = useContext(TodoContext);
   const { postData, loading } = usePost("/todos");
   const { updateData } = useUpdate(`/todos/${todoItem ? todoItem.id : ""}`);
 
@@ -58,13 +57,11 @@ export default function TodoForm({ update, todoItem, onClose }: TodoFormProps) {
     let savedTodo: Todos;
     if (update) {
       savedTodo = await updateData(newTodo);
-      console.log("Uppdaterar");
-      console.log("Uppdaterar med", savedTodo);
       todoDispatch({ type: TODO_ACTIONS.UPDATE, payload: savedTodo });
     } else {
       savedTodo = await postData(newTodo);
       console.log(savedTodo);
-      console.log("Skapar ny");
+
       todoDispatch({ type: TODO_ACTIONS.ADD, payload: savedTodo });
     }
     if (onClose) onClose();
@@ -72,7 +69,10 @@ export default function TodoForm({ update, todoItem, onClose }: TodoFormProps) {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-5"
+        >
           <FormField
             control={form.control}
             name="taskName"
@@ -98,7 +98,7 @@ export default function TodoForm({ update, todoItem, onClose }: TodoFormProps) {
               </FormItem>
             )}
           />
-          <Button type="submit">
+          <Button disabled={loading} className="self-end" type="submit">
             {update ? "Uppdatera" : "Lägg till task"}
           </Button>
         </form>
