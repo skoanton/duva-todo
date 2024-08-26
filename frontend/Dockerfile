@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Exponera port 3000 (eller vilken port din frontend använder)
-EXPOSE 3000
+EXPOSE 5173
 
 # Starta applikationen med npm run dev
 CMD ["npm", "run", "dev"]
