@@ -23,7 +23,7 @@ export default function Todos({}: TodosProps) {
     <div className=" flex flex-col gap-5 mt-5 p-2">
       <TodoItems />
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger className="bg-primary text-primary-foreground rounded-md p-4 w-full md:w-1/3">
+        <DialogTrigger className="bg-primary text-primary-foreground rounded-md p-4 w-full md:w-1/3 md:self-center">
           Skapa en ny task
         </DialogTrigger>
         <DialogContent>
