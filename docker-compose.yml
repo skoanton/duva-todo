@@ -16,32 +16,23 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=tododb
+    env_file:
+      - .env
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres", "5432", "--", "go", "run", "main.go"]
+    command: ["/app/wait-for-it.sh", "postgres", "5432", "--", "./main"]
 
   postgres:
     image: postgres:14
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: tododb
+      POSTGRES_DB: todoapp
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   postgres_data:
