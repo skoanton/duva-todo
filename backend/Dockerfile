@@ -2,7 +2,7 @@
 FROM golang:1.23
 
 # Installera nödvändiga paket
-RUN apt-get update && apt-get install -y netcat
+RUN apt-get update && apt-get install -y netcat-openbsd
 
 # Sätt arbetskatalogen
 WORKDIR /app
@@ -28,5 +28,5 @@ RUN go build -o main .
 # Exponera port 8080 (eller vilken port din backend använder)
 EXPOSE 8080
 
-# Starta applikationen
-CMD ["./main"]
+# Starta applikationen med wait-for-it.sh
+CMD ["/app/wait-for-it.sh", "postgres", "5432", "--", "./main"]
