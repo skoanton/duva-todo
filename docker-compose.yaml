@@ -8,7 +8,8 @@ services:
       - "8080:8080"
     depends_on:
       - db
-    network_mode: host
+    networks:
+      - mynetwork
 
   frontend:
     build:
@@ -16,7 +17,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:80"
-    network_mode: host
+    networks:
+      - mynetwork
 
   db:
     image: postgres:latest
@@ -28,4 +30,9 @@ services:
       - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    network_mode: host
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
