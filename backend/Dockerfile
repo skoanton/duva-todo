@@ -9,7 +9,7 @@ COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
 # Copy the rest of the application code
-COPY backend/ ./
+COPY . .
 
 # Build the Go app
 RUN go build -o main .
