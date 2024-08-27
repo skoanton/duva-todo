@@ -1,4 +1,4 @@
-ALTER USER postgres WITH PASSWORD 'password';
+ALTER USER postgres WITH PASSWORD 'yourpassword';
 
 CREATE TABLE todos (
     id SERIAL PRIMARY KEY,
@@ -9,17 +9,11 @@ CREATE TABLE todos (
 );
 
 INSERT INTO
-    todos (
-        title,
-        done,
-        due_date,
-    )
+    todos (title, done, due_date)
 VALUES (
         'Skriva en dokumentation',
         FALSE,
-        '2024-09-01',
-
-
+        '2024-09-01'
     ),
     (
         'Förbereda presentation',
