@@ -5,7 +5,7 @@ FROM golang:1.23
 WORKDIR /app
 
 # Copy go.mod and go.sum, then download dependencies
-COPY backend/go.mod backend/go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the rest of the application code
