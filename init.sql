@@ -1,4 +1,4 @@
-ALTER USER postgres WITH PASSWORD 'yourpassword';
+ALTER USER postgres WITH PASSWORD 'password';
 
 CREATE TABLE todos (
     id SERIAL PRIMARY KEY,
