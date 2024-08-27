@@ -25,7 +25,7 @@ type Todo struct {
 }
 
 const (
-	host     = "db" //
+	host     = "localhost" //
 	port     = 5432
 	user     = "postgres"
 	password = "password"
