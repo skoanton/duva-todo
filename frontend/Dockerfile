@@ -2,7 +2,7 @@ FROM node:18-alpine
 WORKDIR /app
 COPY package.json .
 RUN npm install
-COPY frontend/ ./
+COPY . .
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 3000
