@@ -20,6 +20,7 @@ services:
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
+      PASSWORD: password
       POSTGRES_DB: todoapp
     ports:
       - "5432:5432"
