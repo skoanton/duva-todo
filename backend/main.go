@@ -14,14 +14,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "db"
-	port     = 5432
-	user     = "postgres"
-	password = "password"
-	dbname   = "todoapp"
-)
-
 var db *sql.DB
 
 type Todo struct {
@@ -32,11 +24,18 @@ type Todo struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+const (
+	host     = "db"       // The service name in Docker Compose
+	port     = 5432       // The port on which PostgreSQL is listening
+	user     = "postgres" // The PostgreSQL user
+	password = "password" // The password set in Docker Compose
+	dbname   = "todoapp"  // The database name set in Docker Compose
+)
+
 func main() {
 
 	//Connection to db
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	fmt.Println("Connecting to database with the following details:")
 	fmt.Printf("Host: %s, Port: %d, User: %s, DBName: %s\n", host, port, user, dbname)
 
 	var err error
