@@ -25,11 +25,11 @@ type Todo struct {
 }
 
 const (
-	host     = "db"       // The service name in Docker Compose
-	port     = 5432       // The port on which PostgreSQL is listening
-	user     = "postgres" // The PostgreSQL user
-	password = "password" // The password set in Docker Compose
-	dbname   = "todoapp"  // The database name set in Docker Compose
+	host     = "localhost" // The service name in Docker Compose
+	port     = 5432        // The port on which PostgreSQL is listening
+	user     = "postgres"  // The PostgreSQL user
+	password = "password"  // The password set in Docker Compose
+	dbname   = "todoapp"   // The database name set in Docker Compose
 )
 
 func main() {
