@@ -6,6 +6,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: todoapp
+    ports:
+      - "5432:5432"
     network_mode: "host"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
