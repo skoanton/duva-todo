@@ -35,23 +35,26 @@ type Todo struct {
 func main() {
 
 	//Connection to db
-	psqlInfo := fmt.Sprintf("host=%s port=%d user =%s password=%s "+" dbname=%s sslmode=disable", host, port, user, password, dbname)
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	fmt.Println("Connecting to database with the following details:")
+	fmt.Printf("Host: %s, Port: %d, User: %s, DBName: %s\n", host, port, user, dbname)
+
 	var err error
 	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error opening database connection: %v", err)
 	}
 
 	defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error pinging database: %v", err)
 	}
 
-	r := mux.NewRouter()
-
 	fmt.Println("Connection successful")
+
+	r := mux.NewRouter()
 	r.HandleFunc("/todos", handleTodos)
 	r.HandleFunc("/todos/{id}", deleteTodo).Methods("DELETE")
 	r.HandleFunc("/todos/{id}", updateTodo).Methods("PUT")
