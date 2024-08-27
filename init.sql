@@ -1,7 +1,3 @@
-CREATE DATABASE todoapp;
-
-\c todoapp 
-
 ALTER USER postgres WITH PASSWORD 'password';
 
 CREATE TABLE todos (
